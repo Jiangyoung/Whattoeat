@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Whattoeat</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="btn_start">吃什么呢</string>
+    <string name="rb_randRestau">餐厅随机</string>
+    <string name="rb_randMeal">餐随机</string>
+    <string name="rb_both">完全随机</string>
+    <string name="menu_add">添加</string>
+    <string name="title_activity_add">AddActivity</string>
+    <string name="title_activity_list">ListActivity</string>
+    <string name="btn_showList">查看列表</string>
+
+</resources>
