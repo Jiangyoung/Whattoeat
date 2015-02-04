@@ -140,7 +140,7 @@ public class ListActivity extends Activity {
 
 	private void initRestauSpinner() {		
 		DBService dbService = new DBService(ListActivity.this, 1);
-		ListActivity.this.restauStrs = dbService.getAllMealName();
+		ListActivity.this.restauStrs = dbService.getAllRestauName();
 		dbService.close();
 		ArrayAdapter<String> restauAdapter = new ArrayAdapter<String>(ListActivity.this, android.R.layout.simple_spinner_item,restauStrs);
 		sp_list_restau.setAdapter(restauAdapter);		

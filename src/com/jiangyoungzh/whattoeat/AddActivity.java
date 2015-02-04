@@ -37,6 +37,8 @@ public class AddActivity extends Activity {
 	private String restauStr;
 	private String mealStr;
 	
+	private int patchParamsLength = 0;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,12 +46,7 @@ public class AddActivity extends Activity {
 		
 		init();
 		
-		String[] patchParams = new String[]{"\t--添加--"};
-		final int patchParamsLength = patchParams.length;
-		DBService dbService = new DBService(AddActivity.this, 1);
 		
-		
-		AddActivity.this.restauStrs = dbService.getAllRestauNameAndPatchParams(patchParams);
 		
 		ArrayAdapter<String> restauAdapter = new ArrayAdapter<String>(AddActivity.this, android.R.layout.simple_spinner_item,restauStrs);
 		AddActivity.this.sp_add_restau.setAdapter(restauAdapter);
@@ -123,6 +120,7 @@ public class AddActivity extends Activity {
 				}else{
 					showToast("至少填点啥么(字符2+)");
 				}
+				initRestauSpinner();
 				dbService.close();
 				
 			}
@@ -142,11 +140,21 @@ public class AddActivity extends Activity {
 		AddActivity.this.et_add_meal = (EditText) findViewById(R.id.et_add_meal);
 		AddActivity.this.btn_add_save = (Button) findViewById(R.id.btn_add_save);
 		
+		initRestauSpinner();
 		
 	}
 
 
 	
+
+	private void initRestauSpinner() {
+		String[] patchParams = new String[]{"\t--添加--"};
+		patchParamsLength = patchParams.length;
+		DBService dbService = new DBService(AddActivity.this, 1);
+		AddActivity.this.restauStrs = dbService.getAllRestauNameAndPatchParams(patchParams);
+		
+	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
