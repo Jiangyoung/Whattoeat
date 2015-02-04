@@ -11,5 +11,12 @@
     <string name="title_activity_add">AddActivity</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="btn_showList">查看列表</string>
+    <string name="btn_add_save_name">保存</string>
+    <string name="et_add_restau_hint">这里输入餐厅名字</string>
+    <string name="et_add_meal_hint">这里输入餐名</string>
+    <string name="tv_add_restau">餐厅名</string>
+    <string name="tv_add_meal">餐名</string>
+    <string name="tv_list_restau">餐厅名</string>
+    <string name="tv_list_meal">餐名</string>
 
 </resources>

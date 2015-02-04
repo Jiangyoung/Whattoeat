@@ -1,12 +1,49 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="${relativePackage}.${activityClass}" >
+    android:orientation="vertical" >
 
     <TextView
+        android:id="@+id/tv_add_default"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
+    <TextView
+        android:id="@+id/tv_add_restau"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_add_restau" />
+    <Spinner android:id="@+id/sp_add_restau"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        
+        />
+    <EditText android:id="@+id/et_add_restau"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/et_add_restau_hint"
+        android:inputType="text"
+        android:maxLength="16"
+        android:maxLines="1"/>
+    
+    <TextView
+        android:id="@+id/tv_add_meal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_add_meal" />
 
-</RelativeLayout>
+    <EditText android:id="@+id/et_add_meal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/et_add_meal_hint"
+        android:inputType="text"
+        android:maxLength="16"
+        android:maxLines="1"/>
+    <Button android:id="@+id/btn_add_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_add_save_name"/>
+    
+
+</LinearLayout>

@@ -1,7 +1,14 @@
 package com.jiangyoungzh.whattoeat;
 
 
+import java.util.Random;
+
+import com.jiangyoungzh.whattoeat.service.DBService;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,14 +24,19 @@ import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
+	public static boolean needInitRandData = true;
+	
 	private final int RAND_STOP = 1;
 	
-	private TextView textView1;
+	private TextView tv_main_default;
 	private RadioGroup radioGroup;
 	private Button btn_start;
 	private Button btn_showList;
 	
 	private ProgressDialog pDialog;
+	
+	private String[] restauStrs = null;
+	private String[] mealStrs = null;
 	
 	
 	private Handler handler = new Handler(){
@@ -32,6 +44,7 @@ public class MainActivity extends Activity {
 			switch(msg.what){
 			case RAND_STOP:
 				if(pDialog.isShowing())pDialog.cancel();
+				MainActivity.this.showRandResault();
 				break;
 			}
 		};
@@ -44,20 +57,22 @@ public class MainActivity extends Activity {
 		
 		init();
 
-		btn_start.setOnClickListener(new View.OnClickListener() {
-			
+		MainActivity.this.btn_start.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
-				pDialog.setMessage("别着急~");
-				pDialog.show();
+				MainActivity.this.pDialog.setMessage("别着急~");
+				MainActivity.this.pDialog.show();
+				if(MainActivity.needInitRandData){
+					MainActivity.needInitRandData = false;
+					MainActivity.this.initRandData();
+				}
 				new Thread(){
 					public void run() {
 						try {
-							this.sleep(3000);
+							Thread.sleep(2000);
 							Message msg = Message.obtain();
 							msg.what = RAND_STOP;
-							handler.sendMessage(msg);
+							MainActivity.this.handler.sendMessage(msg);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -67,30 +82,89 @@ public class MainActivity extends Activity {
 			}
 		});
 		
-		btn_showList.setOnClickListener(new View.OnClickListener() {
+		MainActivity.this.btn_showList.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intentToList = new Intent();
 				intentToList.setClass(MainActivity.this, ListActivity.class);
 				startActivity(intentToList);
-				
 			}
 		});
 		
+	}
+	
+	protected void showRandResault() {
+		String res = getRandResault();
+		AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+		dialogBuilder.setTitle("随机结果");
+		dialogBuilder.setIcon(android.R.drawable.btn_star);
+		dialogBuilder.setMessage(res);
+		dialogBuilder.setPositiveButton("确定", null);
+		dialogBuilder.create().show();
+	}
+	
+	protected String getRandResault(){
+		String res = "";
+		int randNum = 0;
+		int mode = MainActivity.this.radioGroup.getCheckedRadioButtonId();
+		Random random = new Random(System.currentTimeMillis());
+		switch(mode){
+		case R.id.rb_randRestau:
+			if(restauStrs.length<1){
+				showToast("木有还木有餐厅数据，随毛线啊");
+				System.exit(1);
+			}
+			randNum = random.nextInt(restauStrs.length);
+			res = restauStrs[randNum];
+			break;
+		case R.id.rb_randMeal:
+			if(mealStrs.length<1){
+				showToast("木有还木有饭菜数据，随毛线啊");
+				System.exit(1);
+			}
+			randNum = random.nextInt(mealStrs.length);
+			res = mealStrs[randNum];
+			break;
+		case R.id.rb_both:
+			res = "coming soon.";
+			break;
+		default:
+		}
+		return res;
+	}
 
-		//actionBar = getActionBar();
-		//actionBar.setDisplayHomeAsUpEnabled(true);
-	}
-	
 	private void init() {
-		pDialog = new ProgressDialog(MainActivity.this);
+		MainActivity.this.pDialog = new ProgressDialog(MainActivity.this);
 		
-		radioGroup = (RadioGroup)findViewById(R.id.rg_chose);
-		btn_showList = (Button)findViewById(R.id.btn_showList);
-		btn_start = (Button)findViewById(R.id.btn_start);
+		MainActivity.this.tv_main_default = (TextView)findViewById(R.id.tv_main_default);
+		MainActivity.this.radioGroup = (RadioGroup)findViewById(R.id.rg_chose);
+		MainActivity.this.btn_showList = (Button)findViewById(R.id.btn_showList);
+		MainActivity.this.btn_start = (Button)findViewById(R.id.btn_start);
 		
+		//DBService dbService = new DBService(MainActivity.this, 1);
+		
+		initCount();
+
 	}
-	
+	/**
+	 * 取得餐厅和饭菜的数据
+	 */
+	private void initRandData() {
+		initCount();
+		DBService dbService = new DBService(MainActivity.this, 1);
+		restauStrs = dbService.getAllRestauName();
+		mealStrs = dbService.getAllMealName();
+	}
+	/**
+	 * 取得餐厅和饭菜的数量
+	 */
+	private void initCount() {
+		DBService dbService = new DBService(MainActivity.this, 1);
+		int restauCount = dbService.getRestauCount();
+		int mealCount = dbService.getMealCount();
+		MainActivity.this.tv_main_default.setText("已录入资料\n餐厅："+restauCount+"家，饭菜："+mealCount+"种");
+		dbService.close();
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,5 +184,8 @@ public class MainActivity extends Activity {
 
 		}
 		return super.onMenuItemSelected(featureId, item);
+	}
+	protected void showToast(String str){
+		Toast.makeText(MainActivity.this, str, Toast.LENGTH_SHORT).show();
 	}
 }
